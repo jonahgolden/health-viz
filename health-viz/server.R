@@ -7,41 +7,27 @@
 #    http://shiny.rstudio.com/
 #
 
-# Define server logic required to draw a histogram
 shinyServer(function(input, output) {
-  FilteredData <- reactive({
-    return(FilterMost(input$display, input$level, input$year, input$sex, input$metric))
-  })
   
+  # Bar Plots ---------------------------------
+  FilteredBar <- reactive({
+    return(FilterBar(input$display, input$level, input$year, input$sex, input$metric))
+  })
   output$deathBar <- renderPlot({
-    BarPlot(FilteredData(), DEATH_ID)
+    BarPlot(FilteredBar(), DEATH_ID)
   })
-  
   output$dalyBar <- renderPlot({
-    BarPlot(FilteredData(), DALY_ID)
+    BarPlot(FilteredBar(), DALY_ID)
   })
-  
   output$yldBar <- renderPlot({
-    BarPlot(FilteredData(), YLD_ID)
+    BarPlot(FilteredBar(), YLD_ID)
   })
-  
   output$yllBar <- renderPlot({
-    BarPlot(FilteredData(), YLL_ID)
+    BarPlot(FilteredBar(), YLL_ID)
   })
   
-  # output$deathBar <- renderPlot({
-  #   bar_plot(filter2(fd(), DEATH_ID), DEATH_ID)
-  # })
-  # 
-  # output$dalyBar <- renderPlot({
-  #   bar_plot(filter2(fd(), DALY_ID), DALY_ID)
-  # })
-  # 
-  # output$yldBar <- renderPlot({
-  #   bar_plot(filter2(fd(), YLD_ID), YLD_ID)
-  # })
-  # 
-  # output$yllBar <- renderPlot({
-  #   bar_plot(filter2(fd(), YLL_ID), YLL_ID)
-  # })
+  # Line Plot ---------------------------------
+  output$linePlot <- renderPlot({
+    LinePlot(input$display_line, input$level_line, input$sex_line, input$metric_line, input$measure_line, input$show_top)
+  })
 })

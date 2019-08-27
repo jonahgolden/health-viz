@@ -7,9 +7,6 @@
 #    http://shiny.rstudio.com/
 #
 
-library(shiny)
-
-# Define UI for application that draws a histogram
 shinyUI(fluidPage(
   # Application title
   # titlePanel("Old Faithful Geyser Data"),
@@ -27,13 +24,14 @@ shinyUI(fluidPage(
     "}"
   ),
   
-  # Bar Panel
-  tabsetPanel(tabPanel(
-    "bar", fluid = TRUE,
+  tabsetPanel(
+    # Bar Panel---------------------------------
+    tabPanel(
+    "bars", fluid = TRUE,
     sidebarLayout(
       # Inputs
       sidebarPanel(
-        width = 4,
+        width = SIDE_BAR_PANEL_WIDTH,
         
         radioGroupButtons(
           "display",
@@ -61,8 +59,8 @@ shinyUI(fluidPage(
             value = max(VALID_YEARS),
             sep = "",
             step = 1
+            # animate = animationOptions(interval = 3000)
           ),
-          # animate = animationOptions(interval = 3000)
           
           radioGroupButtons(
             "sex",
@@ -98,74 +96,77 @@ shinyUI(fluidPage(
     )
   )
   ,
-  # plot Panel
+  # Line Panel
   tabPanel(
-    "plot", fluid = TRUE)#,
-    # sidebarLayout(
-    #   sidebarPanel(
-    #     width = 4,
-    # 
-    #     radioGroupButtons(
-    #       "display",
-    #       label = h4("Display:"),
-    #       choices = c("Cause" = "cause", "Risk" = "risk"),
-    #       selected = "cause",
-    #       justified = TRUE,
-    #       status = "primary"
-    #     ),
-  #       
-  #       wellPanel(
-  #         sliderInput(
-  #           "level",
-  #           label = h4("Level:"),
-  #           min = 2,
-  #           max = 4,
-  #           value = 3
-  #         ),
-  #         
-  #         sliderInput(
-  #           "year",
-  #           label = h4("Year:"),
-  #           min = min(VALID_YEARS),
-  #           max = max(VALID_YEARS),
-  #           value = max(VALID_YEARS),
-  #           sep = "",
-  #           step = 1
-  #         ),
-  #         # animate = animationOptions(interval = 3000)
-  #         
-  #         radioGroupButtons(
-  #           "sex",
-  #           label = h4("Sex:"),
-  #           choices = c(
-  #             "Male" = 1,
-  #             "Female" = 2,
-  #             "Both" = 3
-  #           ),
-  #           selected = 3,
-  #           justified = TRUE,
-  #           status = "primary"
-  #         ),
-  #         
-  #         radioGroupButtons(
-  #           "metric",
-  #           label = h4("Metric:"),
-  #           choices = c("#" = 1, "%" = 2, "Rate" = 3),
-  #           selected = 1,
-  #           justified = TRUE,
-  #           status = "primary"
-  #         )
-  #       )
-  #     ),
-  #     mainPanel(fluidRow(
-  #       column(6, plotOutput("deathBar")),
-  #       column(6, plotOutput("dalyBar"))
-  #     ),
-  #     fluidRow(
-  #       column(6, plotOutput("yldBar")),
-  #       column(6, plotOutput("yllBar"))
-  #     ))
-  #   )
-  # )
+    "line", fluid = TRUE,
+    sidebarLayout(
+      sidebarPanel(
+        width = SIDE_BAR_PANEL_WIDTH,
+        
+        radioGroupButtons(
+          "display_line",
+          label = h4("Display:"),
+          choices = c("Cause" = "cause", "Risk" = "risk"),
+          selected = "cause",
+          justified = TRUE,
+          status = "primary"
+        ),
+        
+        wellPanel(
+          sliderInput(
+            "level_line",
+            label = h4("Level:"),
+            min = 1,
+            max = 4,
+            value = 3
+          ),
+          
+          radioGroupButtons(
+            "sex_line",
+            label = h4("Sex:"),
+            choices = c(
+              "Male" = 1,
+              "Female" = 2,
+              "Both" = 3
+            ),
+            selected = 3,
+            justified = TRUE,
+            status = "primary"
+          ),
+          
+          radioGroupButtons(
+            "metric_line",
+            label = h4("Metric:"),
+            choices = c("#" = 1, "%" = 2, "Rate" = 3),
+            selected = 1,
+            justified = TRUE,
+            status = "primary"
+          ),
+          
+          radioGroupButtons(
+            "measure_line",
+            label = h4("Measure:"),
+            choices = c("Deaths" = 1, "DALYs" = 2, "YLDs" = 3, "YLLs" = 4),
+            selected = 1,
+            justified = TRUE,
+            status = "primary"
+          ),
+          
+          sliderInput(
+            "show_top",
+            label = h4("Show Top:"),
+            min = 1,
+            max = 10,
+            value = 3
+          )
+        )
+        
+      ),
+      mainPanel(
+        plotOutput("linePlot")
+      )
+    )
+    )
+  
   )
 ))
