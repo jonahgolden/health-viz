@@ -10,33 +10,41 @@ DEATH_ID <- 1
 DALY_ID <- 2
 YLD_ID <- 3
 YLL_ID <- 4
-SHOW_TOP <- 15
-BAR_WIDTH <- 0.9
-PLOT_WIDTH_MULTIPLIER <- 1.2
 
-# Data-----------------------------------------------------------------------
-data <- readRDS("../upstream/data/ihme-2017-v2.RDS") %>%
+# Load Data-----------------------------------------------------------------------
+ihme2017Data <- readRDS("../upstream/data/ihme-2017-v2.RDS") %>%
   subset(., year_id >= min(VALID_YEARS))
 
 # Functions-----------------------------------------------------------------------
-filter1 <- function(display_id_in, level_id_in, year_id_in, sex_id_in, metric_id_in) {
-  data %>% filter(display == display_id_in,
-                  grepl(level_id_in, level),
-                  year_id == year_id_in,
-                  sex_id == sex_id_in,
-                  metric_id == metric_id_in)
+FilterMost <- function(display_id_in, level_id_in, year_id_in, sex_id_in, metric_id_in) {
+  filtered_data <- ihme2017Data %>%
+    filter(display == display_id_in,
+           grepl(level_id_in, level),
+           year_id == year_id_in,
+           sex_id == sex_id_in,
+           metric_id == metric_id_in)
+  return(filtered_data)
 }
 
-filter2 <- function(f1_output, measure_id_in) {
-  f1_output %>%
-    filter(measure_id == measure_id_in) %>%
+GetTop <- function(data, keep_top_number) {
+  ranked_data <- data %>%
     mutate(rank = rank(-val, ties.method = 'first')) %>%
-    filter(rank <= SHOW_TOP)
+    filter(rank <= keep_top_number)
+  return(ranked_data)
 }
 
-bar_plot <- function(filtered, measure) {
-  plot_width <- max(filtered$val)*PLOT_WIDTH_MULTIPLIER
-  percent_sign <- switch(filtered$metric[1],
+# Make Bar Plot--------------------
+SHOW_TOP_BAR <- 15
+BAR_WIDTH <- 0.9
+BAR_PLOT_WIDTH_MULTIPLIER <- 1.2
+
+BarPlot <- function(data, measure) {
+  data <- data %>%
+    filter(measure_id == measure) %>%
+    GetTop(., SHOW_TOP_BAR)
+  
+  plot_width <- max(data$val)*BAR_PLOT_WIDTH_MULTIPLIER
+  percent_sign <- switch(data$metric[1],
                          "",
                          "%")
   plot_title <- switch(measure,
@@ -50,11 +58,11 @@ bar_plot <- function(filtered, measure) {
                   "#8ECAE3",
                   "#E6C8A0")
   
-  ggplot(data=filtered, aes(x=reorder(id_name, val),y=val)) +
+  ggplot(data=data, aes(x=reorder(id_name, val),y=val)) +
     coord_flip() +
     geom_bar(position="dodge", stat="identity", width=BAR_WIDTH, fill=color) + 
     geom_text(hjust=0, aes(x=id_name, y=0, label=paste0(" ", rank, ". ", id_name))) +
-    annotate(geom="text", hjust=1, x=filtered$id_name, y=plot_width, label=paste0(filtered$val, percent_sign)) +
+    annotate(geom="text", hjust=1, x=data$id_name, y=plot_width, label=paste0(data$val, percent_sign)) +
     theme(panel.grid.major=element_blank(),
           panel.grid.minor=element_blank(),
           panel.background=element_blank(),

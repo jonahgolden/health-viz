@@ -9,23 +9,39 @@
 
 # Define server logic required to draw a histogram
 shinyServer(function(input, output) {
-  fd <- reactive({
-    filter1(input$display, input$level, input$year, input$sex, input$metric)
+  FilteredData <- reactive({
+    return(FilterMost(input$display, input$level, input$year, input$sex, input$metric))
   })
   
   output$deathBar <- renderPlot({
-    bar_plot(filter2(fd(), DEATH_ID), DEATH_ID)
+    BarPlot(FilteredData(), DEATH_ID)
   })
   
   output$dalyBar <- renderPlot({
-    bar_plot(filter2(fd(), DALY_ID), DALY_ID)
+    BarPlot(FilteredData(), DALY_ID)
   })
   
   output$yldBar <- renderPlot({
-    bar_plot(filter2(fd(), YLD_ID), YLD_ID)
+    BarPlot(FilteredData(), YLD_ID)
   })
   
   output$yllBar <- renderPlot({
-    bar_plot(filter2(fd(), YLL_ID), YLL_ID)
+    BarPlot(FilteredData(), YLL_ID)
   })
+  
+  # output$deathBar <- renderPlot({
+  #   bar_plot(filter2(fd(), DEATH_ID), DEATH_ID)
+  # })
+  # 
+  # output$dalyBar <- renderPlot({
+  #   bar_plot(filter2(fd(), DALY_ID), DALY_ID)
+  # })
+  # 
+  # output$yldBar <- renderPlot({
+  #   bar_plot(filter2(fd(), YLD_ID), YLD_ID)
+  # })
+  # 
+  # output$yllBar <- renderPlot({
+  #   bar_plot(filter2(fd(), YLL_ID), YLL_ID)
+  # })
 })
