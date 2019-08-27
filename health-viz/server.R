@@ -7,20 +7,25 @@
 #    http://shiny.rstudio.com/
 #
 
-library(shiny)
-
 # Define server logic required to draw a histogram
 shinyServer(function(input, output) {
-   
-  output$distPlot <- renderPlot({
-    
-    # generate bins based on input$bins from ui.R
-    x    <- faithful[, 2] 
-    bins <- seq(min(x), max(x), length.out = input$bins + 1)
-    
-    # draw the histogram with the specified number of bins
-    hist(x, breaks = bins, col = 'darkgray', border = 'white')
-    
+  fd <- reactive({
+    filter1(input$display, input$level, input$year, input$sex, input$metric)
   })
   
+  output$deathBar <- renderPlot({
+    bar_plot(filter2(fd(), DEATH_ID), DEATH_ID)
+  })
+  
+  output$dalyBar <- renderPlot({
+    bar_plot(filter2(fd(), DALY_ID), DALY_ID)
+  })
+  
+  output$yldBar <- renderPlot({
+    bar_plot(filter2(fd(), YLD_ID), YLD_ID)
+  })
+  
+  output$yllBar <- renderPlot({
+    bar_plot(filter2(fd(), YLL_ID), YLL_ID)
+  })
 })
