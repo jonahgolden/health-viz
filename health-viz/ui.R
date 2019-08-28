@@ -157,13 +157,13 @@ shinyUI(fluidPage(
             label = h4("Show Top:"),
             min = 1,
             max = 10,
-            value = 3
+            value = 10
           )
         )
         
       ),
       mainPanel(
-        plotOutput("linePlot")
+        plotOutput("linePlot", height = 600)
       )
     )
     )
