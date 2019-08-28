@@ -143,14 +143,23 @@ shinyUI(fluidPage(
             status = "primary"
           ),
           
-          radioGroupButtons(
+          selectInput(
             "measure_line",
             label = h4("Measure:"),
-            choices = c("Deaths" = 1, "DALYs" = 2, "YLDs" = 3, "YLLs" = 4),
-            selected = 1,
-            justified = TRUE,
-            status = "primary"
-          ),
+            choices = c("Deaths" = 1,
+                        "Disability Adjusted Life Years (DALYs)" = 2,
+                        "Years Lived with Disability (YLDs)" = 3,
+                        "Years of Life Lost (YLLs)" = 4),
+            selected = 1),
+          
+          # radioGroupButtons(
+          #   "measure_line",
+          #   label = h4("Measure:"),
+          #   choices = c("Deaths" = 1, "DALYs" = 2, "YLDs" = 3, "YLLs" = 4),
+          #   selected = 1,
+          #   justified = TRUE,
+          #   status = "primary"
+          # ),
           
           sliderInput(
             "show_top",

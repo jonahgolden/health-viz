@@ -76,7 +76,7 @@ LinePlot <- function(display_id_in, level_id_in, sex_id_in, metric_id_in, measur
   data <- FilterLine(display_id_in, level_id_in, sex_id_in, metric_id_in, measure_id_in, show_top) %>%
     mutate(label = ifelse(year_id == max(year_id), as.character(id_name), NA_character_))
   
-  ylabel <- paste(METRICS[[metric_id_in]]$name, MEASURES[[measure_id_in]]$name, sep=" of ")
+  ylabel <- stringr::str_wrap(paste(METRICS[[metric_id_in]]$name, MEASURES[[measure_id_in]]$short_name, sep=" of "), 5)
   # years <- c(min(data$year_id):(max(data$year_id) + 5))
   # print(years)
   years <- unique(data$year_id)
@@ -98,7 +98,7 @@ LinePlot <- function(display_id_in, level_id_in, sex_id_in, metric_id_in, measur
           axis.text.x = element_text(angle = 45, hjust = 1),  # Add margin for labels and top
           plot.title = element_text(size = 24, face = "bold"),
           axis.title.x = element_text(size = 16, face = "bold"),
-          axis.title.y = element_text(size = 16, face = "bold"))  
+          axis.title.y = element_text(angle = 0, vjust = 0.5, size = 16, face = "bold"))  
   
   # Code to turn off clipping
   gt <- ggplotGrob(p)
