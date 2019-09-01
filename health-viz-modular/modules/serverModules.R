@@ -1,3 +1,4 @@
+# Load file with individual widget modules
 source("modules/uiModules.R")
 
 # Bar server modules function
@@ -13,6 +14,7 @@ barModules <- function(input, output, session) {
   )
 }
 
+# Line server modules function
 lineModules <- function(input, output, session) {
   return(
     list(
