@@ -3,7 +3,9 @@ library(magrittr)
 library(shiny)
 library(shinyWidgets)
 library(ggplot2)
-library(plotly)
+
+library(shinyjs)
+library(shinydashboard)
 
 # Constants-----------------------------------------------------------------------
 SIDE_BAR_PANEL_WIDTH <- 4
@@ -33,6 +35,9 @@ METRICS <- list(
 ihme2017Data <- readRDS("../upstream/data/ihme-2017-v2.RDS") %>%
   subset(., year_id >= min(VALID_YEARS))
 
+# Modules for UI----------------------------------------------------------------------
+source("modules/uiModuleOptions.R")
+
 # Functions-----------------------------------------------------------------------
 
 GetTop <- function(data, keep_top_number) {
@@ -58,15 +63,19 @@ FilterLine <- function(display_id_in, level_id_in, sex_id_in, metric_id_in, meas
            grepl(level_id_in, level),
            sex_id == sex_id_in,
            metric_id == metric_id_in,
-           measure_id == measure_id_in) 
+           measure_id == measure_id_in)
   
   top_years <- filtered_data %>%
     filter(year_id == max(filtered_data$year_id)) %>%
     GetTop(., show_top)
   
-  return(filtered_data %>% 
+  return(list(
+    data = (filtered_data %>% 
            filter(id_num %in% top_years$id_num) %>%
-           arrange(id_num, year_id))
+           arrange(id_num, year_id)),
+    ylabel = stringr::str_wrap(paste(METRICS[[metric_id_in]]$name, MEASURES[[measure_id_in]]$short_name, sep=" of "), 5)
+    )
+  )
 }
 
 # Make Line Plot--------------------
@@ -74,15 +83,14 @@ library(ggrepel) # for labels
 library(grid) # for clipping
 # library(ggiraph)  # interactive
 
-LinePlot <- function(display_id_in, level_id_in, sex_id_in, metric_id_in, measure_id_in, show_top) {
-  data <- FilterLine(display_id_in, level_id_in, sex_id_in, metric_id_in, measure_id_in, show_top) %>%
+LinePlot <- function(filteredData) {
+  data <- filteredData$data %>%
     mutate(label = ifelse(year_id == max(year_id), as.character(id_name), NA_character_))
-  
-  ylabel <- stringr::str_wrap(paste(METRICS[[metric_id_in]]$name, MEASURES[[measure_id_in]]$short_name, sep=" of "), 5)
+  ylabel <- filteredData$ylabel
   years <- unique(data$year_id)
   
   p <- ggplot(data=data, aes(x=year_id, y=val, colour=id_name, group=id_name)) +
-    geom_line() + labs(title = "Booty", x = "Year", y = ylabel) +
+    geom_line() + labs(title = "Some Informative Title", x = "Year", y = ylabel) +
     geom_text_repel(data = subset(data, year_id==2017), lineheight = 0.7, hjust = 0, size = 4, fontface = "bold",
               aes(label = stringr::str_wrap(id_name, 20)),  # colour = factor(id_name)),
               xlim = c(2018, 2030), ylim = c(-Inf, max(data$val)),
@@ -139,6 +147,10 @@ BarPlot <- function(data, measure) {
     ggtitle(plot_title) +
     scale_y_continuous(expand = c(0,0), limits = c(0, plot_width))
 }
+
+
+
+
 
 # --- Line Plot Labels with directlabels
 # library(directlabels)  # for labels

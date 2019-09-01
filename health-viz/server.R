@@ -1,17 +1,35 @@
-#
-# This is the server logic of a Shiny web application. You can run the 
-# application by clicking 'Run App' above.
-#
-# Find out more about building applications with Shiny here:
-# 
-#    http://shiny.rstudio.com/
-#
+# Server
 
-shinyServer(function(input, output) {
+shinyServer(function(input, output, session) {
+  # Widgets -------------------
+  observe({
+    if(input$tab == "bar") {
+      show("display")
+      show("level")
+      show("year")
+      show("sex")
+      show("metric")
+      hide("measure")
+      hide("showtop")
+    } 
+    if(input$tab == "line") {
+      show("display")
+      show("level")
+      hide("year")
+      show("sex")
+      show("metric")
+      show("measure")
+      show("showtop")
+    }
+  })
   
-  # Bar Plots ---------------------------------
+  # Bar -------------------
   FilteredBar <- reactive({
-    return(FilterBar(input$display, input$level, input$year, input$sex, input$metric))
+    return(FilterBar(input$display,
+                     input$level,
+                     input$year,
+                     input$sex,
+                     input$metric))
   })
   output$deathBar <- renderPlot({
     BarPlot(FilteredBar(), DEATH_ID)
@@ -26,8 +44,16 @@ shinyServer(function(input, output) {
     BarPlot(FilteredBar(), YLL_ID)
   })
   
-  # Line Plot ---------------------------------
+  # Line -------------------
+  FilteredLine <- reactive({
+    return(FilterLine(input$display,
+                      input$level,
+                      input$sex,
+                      input$metric,
+                      input$measure,
+                      input$showtop))
+  })
   output$linePlot <- renderPlot({
-    LinePlot(input$display_line, input$level_line, input$sex_line, input$metric_line, input$measure_line, input$show_top)
+    LinePlot(FilteredLine())
   })
 })
