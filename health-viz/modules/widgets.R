@@ -1,4 +1,4 @@
-# Widget modules
+# Widgets
 
 displayButtonInput <- function() {
   radioGroupButtons(

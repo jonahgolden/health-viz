@@ -1,8 +1,12 @@
-source("modules/widgetModules.R")
+# Functions for different ui options.
+
+# Load the widgets
+source("modules/widgets.R")
 
 normalUI <- function() {
   sidebarLayout(
     
+    # Includes all widgets that appear in any tab.
     sidebarPanel(
       width = SIDE_BAR_PANEL_WIDTH,
       useShinyjs(),
@@ -17,8 +21,12 @@ normalUI <- function() {
         measureSelectInput()
       )
     ),
+    
+    # Includes multiple tabs with values that represent them
     mainPanel(
       tabsetPanel(type = "tabs", id = "tab",
+                  
+                  # Bar graphs tab
                   tabPanel("bars", fluid = TRUE, value = "bar",
                            fluidRow(
                              column(6, plotOutput("deathBar")),
@@ -29,6 +37,8 @@ normalUI <- function() {
                              column(6, plotOutput("yllBar"))
                            )
                   ),
+                  
+                  # Line graph tab
                   tabPanel("line", fluid = TRUE, value = "line",
                            plotOutput("linePlot", height = 600)
                   )
