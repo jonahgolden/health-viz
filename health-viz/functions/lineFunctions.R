@@ -17,7 +17,7 @@ FilterLine <- function(display_id_in, level_id_in, sex_id_in, metric_id_in, meas
     data = (filtered_data %>% 
               filter(id_num %in% top_years$id_num) %>%
               arrange(id_num, year_id)),
-    ylabel = stringr::str_wrap(paste(METRICS[[metric_id_in]]$name, MEASURES[[measure_id_in]]$short_name, sep=" of "), 5),
+    ylabel = stringr::str_wrap(paste(METRICS[[metric_id_in]]$name, MEASURES[[measure_id_in]]$short_name, sep=" of "), 13),
     title = paste0("Top ", show_top, ifelse(display_id_in == "cause", " Causes ", " Risks "), "in California (1990-2017)")
   )
   )
