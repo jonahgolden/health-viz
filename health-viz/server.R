@@ -68,13 +68,15 @@ shinyServer(function(input, output, session) {
   
   # RiskByCause -------------------
   FilteredRiskByCause <- reactive({
-    return(FilterLine(input$level,
-                      input$year,
-                      input$sex,
-                      input$metric,
-                      input$measure))
+    return(FilterRiskByCause(
+      input$level,
+      input$year,
+      input$sex,
+      input$metric,
+      input$measure
+    ))
   })
-  output$riskByCause <- renderPlot({
+  output$riskByCause <- renderPlotly({
     RiskByCausePlot(FilteredRiskByCause())
   })
 })

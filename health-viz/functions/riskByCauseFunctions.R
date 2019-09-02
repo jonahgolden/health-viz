@@ -7,11 +7,28 @@ FilterRiskByCause <- function(level_id_in, year_id_in, sex_id_in, metric_id_in, 
            year_id == year_id_in,
            sex_id == sex_id_in,
            metric_id == metric_id_in,
-           measure_id == measure_id_in)
+           measure_id == measure_id_in,
+           cause_id == 294)
   return(filtered_data)
 }
 
 # Function to make risk by cause plot
+# Plotly- Add trace?
+library(data.table)
 RiskByCausePlot <- function(data) {
-  print("Im heeeere")
+  data.table::melt(data, id.vars='cause_id')
+  plot_ly(data, x = ~val, y = ~id_name, type = 'bar', # orientation = 'h',
+          name = ~id_name, color = ~id_name) %>%
+    layout(yaxis = list(title = "Count", barmode = 'stack'))
 }
+
+
+# GGPLOT
+# RiskByCausePlot <- function(data) {
+#   ggplot(data = data, aes(x = , y = val, fill = cause_id)) +
+#     geom_bar(position = "dodge", stat = "identity", fill = "cause_id")
+#     #coord_flip()
+#   
+#   
+#   # %>% ggplotly()
+# }

@@ -12,6 +12,9 @@ library(ggrepel) # for labels
 library(grid) # for clipping
 # library(ggiraph)  # interactive
 
+# Risk By Cause
+library(plotly)
+
 # Constants-----------------------------------------------------------------------
 SIDE_BAR_PANEL_WIDTH <- 4
 PURPLE <- "#8F98B5"

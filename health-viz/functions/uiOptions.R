@@ -45,7 +45,7 @@ normalUI <- function() {
                   
                   # Risk By Cause tab
                   tabPanel("Risks By Cause", fluid = TRUE, value = "riskByCause",
-                           plotOutput("riskByCause", height = 600))
+                           plotlyOutput("riskByCause", height = 600))
       )
     )
   )
