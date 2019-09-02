@@ -17,7 +17,7 @@ shinyUI(fluidPage(
     "}"
   ),
   
-  # Use one or the other. Defined in modules/uiModuleOptions.R
-  #normalUI()
-  dashboardUI()
+  # Use one or the other. Defined in functions/uiOptions.R
+  normalUI()
+  #dashboardUI()
 ))

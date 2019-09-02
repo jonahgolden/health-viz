@@ -21,6 +21,15 @@ shinyServer(function(input, output, session) {
       show("measure")
       show("showtop")
     }
+    if(input$tab == "riskByCause") {
+      hide("display")
+      show("level")
+      show("year")
+      show("sex")
+      show("metric")
+      show("measure")
+      hide("showtop")
+    }
   })
   
   # Bar -------------------
@@ -55,5 +64,17 @@ shinyServer(function(input, output, session) {
   })
   output$linePlot <- renderPlot({
     LinePlot(FilteredLine())
+  })
+  
+  # RiskByCause -------------------
+  FilteredRiskByCause <- reactive({
+    return(FilterLine(input$level,
+                      input$year,
+                      input$sex,
+                      input$metric,
+                      input$measure))
+  })
+  output$riskByCause <- renderPlot({
+    RiskByCausePlot(FilteredRiskByCause())
   })
 })
