@@ -5,10 +5,13 @@ options(stringsAsFactors=FALSE)
 options(max.print = 500)
 
 # Define options-----------------------------------------------------------------------
-api_year <- 2016  # 2017 or 2016. GBD 2016 estimates vs GBD 2017 estimates
+api_year <- 2017  # 2017 or 2016. GBD 2016 estimates vs GBD 2017 estimates
 api_version <- 2  # Only use 2 (1 is depracated)
 single_multi <- "single"  # for single-year data vs. cross-year data – version 2’s bigger than version 1
-output_file <- paste0("../data/", "ihme-", api_year, "-v", api_version, ".RDS")
+risks_by_cause <- TRUE  # If true, gets all causes for each risk, if false just gets 294 (all causes)
+risk_cause <- ifelse(risks_by_cause, "risks-by-cause-", "")
+output_file <- paste0("../data/", "ihme-", risk_cause, api_year, "-v", api_version, ".RDS")
+
 risk <- TRUE  # TODO: make these useful, and include other types
 cause <- TRUE
 
@@ -100,10 +103,35 @@ make_numeric <- function(df) {
 # make_url() defaults: subset=cause_subset2017, measure_id="", year_id="", location_id=527,
 #                      sex_id="", age_group_id=22, metric_id="", risk_id="", cause_id=""
 
+# get_data <- function(set) {
+#   if (set == "risk") {
+#     subset <- risk_subset
+#     cause <- 294
+#   } else if (set == "cause") {
+#     subset <- cause_subset
+#     cause <- ""
+#   }
+#   start_time <- Sys.time()
+#   big_data <- data.frame()
+#   for (m in 1:4) {
+#     for (s in 1:3) {
+#       for (n in 1:3) {
+#         url <- make_url(subset = subset, measure_id = m, sex_id = s, metric_id = n, cause_id = cause)
+#         little_data <- make_data_subset(url)
+#         big_data <- rbind(big_data, little_data)
+#       }
+#     }
+#   }
+#   rm(little_data)
+#   total_time <- Sys.time() - start_time
+#   print(total_time)
+#   return(big_data)
+# }
+
 get_data <- function(set) {
   if (set == "risk") {
     subset <- risk_subset
-    cause <- 294
+    cause <- ifelse(risks_by_cause, "", 294)
   } else if (set == "cause") {
     subset <- cause_subset
     cause <- ""
@@ -113,9 +141,11 @@ get_data <- function(set) {
   for (m in 1:4) {
     for (s in 1:3) {
       for (n in 1:3) {
-        url <- make_url(subset = subset, measure_id = m, sex_id = s, metric_id = n, cause_id = cause)
-        little_data <- make_data_subset(url)
-        big_data <- rbind(big_data, little_data)
+        for (y in 1990:2017) {
+          url <- make_url(subset = subset,measure_id = m,year_id = y,sex_id = s,metric_id = n,cause_id = cause)
+          little_data <- make_data_subset(url)
+          big_data <- rbind(big_data, little_data)
+        }
       }
     }
   }
@@ -145,6 +175,13 @@ risk_data <- raw_risk_data %>%
 # # Save data-----------------------------------------------------------------------
 output <- bind_rows(cause_data, risk_data)
 saveRDS(output, file = output_file)
+
+
+
+
+
+
+
 
 # Previous Get Data Method -----------------------------------------------------------------------
 # get_data <- function(cause) {
