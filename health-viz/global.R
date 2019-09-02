@@ -40,7 +40,8 @@ METRICS <- list(
 ihme2017Data <- readRDS("../upstream/data/ihme-2017-v2.RDS") %>%
   subset(., year_id >= min(VALID_YEARS))
 
-riskByCauseData <- readRDS("../upstream/data/ihme-risks-by-cause-2017-v2.RDS")
+riskByCauseData <- readRDS("../upstream/data/ihme-risks-by-cause-2017-v2.RDS") %>%
+  subset(., display == "risk")
 
 # Source functions ----------------------------------------------------------------------
 source("functions/uiOptions.R")  # For the UI
