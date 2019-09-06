@@ -76,7 +76,7 @@ shinyServer(function(input, output, session) {
       input$measure
     ))
   })
-  output$riskByCause <- renderPlotly({
+  output$riskByCause <- renderPlot({
     RiskByCausePlot(FilteredRiskByCause())
   })
 })
