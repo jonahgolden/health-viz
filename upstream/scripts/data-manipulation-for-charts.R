@@ -6,50 +6,54 @@ ihme2017Data <- readRDS("../data/ihme-2017-v2.RDS")
 cause_info <- ihme2017Data[!duplicated(ihme2017Data[,'id_num']),] %>%
   subset(., display == 'cause') %>%
   select(id_num, id_name, sort_order, level, parent_id, first_parent) %>%
-  'rownames<-'(seq_len(nrow(.)))
+  'rownames<-'(seq_len(nrow(.))) %>%
+  rename('cause_id' = 'id_num', 'cause_name' = 'id_name')
 
 risk_info <- ihme2017Data[!duplicated(ihme2017Data[,'id_num']),] %>%
   subset(., display == 'risk') %>%
   select(id_num, id_name, sort_order, level, parent_id, first_parent) %>%
-  'rownames<-'(seq_len(nrow(.)))
+  'rownames<-'(seq_len(nrow(.))) %>%
+  rename('risk_id' = 'id_num', 'risk_name' = 'id_name')
 
 saveRDS(cause_info, file = "../data/meta/cause-info.RDS")
 saveRDS(risk_info, file = "../data/meta/risk-info.RDS")
 
 # Making data necessary for Risk By Cause chart ------------------------------------
 CAUSE_LEVEL <- 2
-UNECESSARY_FIELDS <- c("location_id", "age_group_id", "upper", "lower")
+UNECESSARY_FIELDS <- c("location_id", "age_group_id", "upper", "lower", "display")
 # Only using level 2 causes
 level2 <- subset(cause_info, level == 2)
 
 # Full data set
 riskByCauseData <- readRDS("../data/ihme-risks-by-cause-2017-v2.RDS") %>%
-  subset(., cause_id %in% level2$id_num) %>%  # Only using level 2 causes
+  subset(., cause_id %in% level2$cause_id) %>%  # Only using level 2 causes
   select(-one_of(UNECESSARY_FIELDS)) %>%  # Don't need these for now
-  rename('risk_id' = 'id_num', 'risk_name' = 'id_name')
+  rename('risk_id' = 'id_num', 'risk_name' = 'id_name', 'first_risk_parent' = 'first_parent')
 
 # Slower
 getCause1 <- function(cause_id) {
-  return(cause_info$id_name[cause_info$id_num == cause_id])
+  return(cause_info$cause_name[cause_info$cause_id == cause_id])
 }
 
 # 10 times faster
 cause = character()
-cause[cause_info$id_num] <- cause_info$id_name
+cause[cause_info$cause_id] <- cause_info$cause_name
 getCause2 <- function(cause_id) {
   return(cause[[cause_id]])
 }
 
-# Add cause names to data
-riskByCauseData <- riskByCauseData %>% mutate(cause_name = mapply(getCause2, cause_id))
-
-# Add risk short names to data
 risk_short_names <- readRDS("../data/meta/risk-meta.RDS") %>%
   select(risk_id, risk_short_name)
 
-s <- merge(riskByCauseData, risk_short_names, by="risk_id")
+cause_first_parents <- cause_info %>%
+  select(cause_id, first_parent) %>%
+  rename('first_cause_parent' = 'first_parent')
 
-riskByCauseData <- riskByCauseData %>% mutate(cause_name = mapply(getCause2, cause_id))
+# Add cause names, risk short names, and cause first parents to data
+riskByCauseData <- riskByCauseData %>% mutate(cause_name = mapply(getCause2, cause_id)) %>%
+  merge(., risk_short_names, by = "risk_id") %>%
+  merge(., cause_first_parents, by = "cause_id") 
+
 saveRDS(riskByCauseData, "../data/risk-by-cause.RDS")
 
 
