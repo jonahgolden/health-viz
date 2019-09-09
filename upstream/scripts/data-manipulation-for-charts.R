@@ -25,7 +25,8 @@ level2 <- subset(cause_info, level == 2)
 # Full data set
 riskByCauseData <- readRDS("../data/ihme-risks-by-cause-2017-v2.RDS") %>%
   subset(., cause_id %in% level2$id_num) %>%  # Only using level 2 causes
-  select(-one_of(UNECESSARY_FIELDS))  # Don't need these for now
+  select(-one_of(UNECESSARY_FIELDS)) %>%  # Don't need these for now
+  rename('risk_id' = 'id_num', 'risk_name' = 'id_name')
 
 # Slower
 getCause1 <- function(cause_id) {
@@ -42,6 +43,13 @@ getCause2 <- function(cause_id) {
 # Add cause names to data
 riskByCauseData <- riskByCauseData %>% mutate(cause_name = mapply(getCause2, cause_id))
 
+# Add risk short names to data
+risk_short_names <- readRDS("../data/meta/risk-meta.RDS") %>%
+  select(risk_id, risk_short_name)
+
+s <- merge(riskByCauseData, risk_short_names, by="risk_id")
+
+riskByCauseData <- riskByCauseData %>% mutate(cause_name = mapply(getCause2, cause_id))
 saveRDS(riskByCauseData, "../data/risk-by-cause.RDS")
 
 
