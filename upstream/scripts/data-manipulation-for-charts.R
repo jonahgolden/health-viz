@@ -21,14 +21,25 @@ saveRDS(risk_info, file = "../data/meta/risk-info.RDS")
 # Making data necessary for Risk By Cause chart ------------------------------------
 CAUSE_LEVEL <- 2
 UNECESSARY_FIELDS <- c("location_id", "age_group_id", "upper", "lower", "display")
-# Only using level 2 causes
-level2 <- subset(cause_info, level == 2)
+ALL_CAUSES <- 294
+
+
+level2 <- cause_info %>%
+  filter(level == 2) %>%
+  arrange(sort_order)
+
+colfunc1 <- colorRampPalette(c("#FBE1D4", "#8F1919"))
+colfunc2 <- colorRampPalette(c("#C1E1B5", "#43884E"))
+colfunc3 <- colorRampPalette(c("#CAD9EC", "#1A468F"))
+
+level2$color = c(colfunc1(7), colfunc2(12), colfunc3(3))
+
 
 # Full data set
 riskByCauseData <- readRDS("../data/ihme-risks-by-cause-2017-v2.RDS") %>%
-  subset(., cause_id %in% level2$cause_id) %>%  # Only using level 2 causes
+  filter(cause_id %in% level2$cause_id) %>%
   select(-one_of(UNECESSARY_FIELDS)) %>%  # Don't need these for now
-  rename('risk_id' = 'id_num', 'risk_name' = 'id_name', 'first_risk_parent' = 'first_parent')
+  rename('risk_id' = 'id_num', 'risk_name' = 'id_name', 'first_risk_parent' = 'first_parent') 
 
 # Slower
 getCause1 <- function(cause_id) {
@@ -52,8 +63,9 @@ cause_first_parents <- cause_info %>%
 # Add cause names, risk short names, and cause first parents to data
 riskByCauseData <- riskByCauseData %>% mutate(cause_name = mapply(getCause2, cause_id)) %>%
   merge(., risk_short_names, by = "risk_id") %>%
-  merge(., cause_first_parents, by = "cause_id") 
+  merge(., cause_first_parents, by = "cause_id")
 
+# All causes subset
 saveRDS(riskByCauseData, "../data/risk-by-cause.RDS")
 
 
