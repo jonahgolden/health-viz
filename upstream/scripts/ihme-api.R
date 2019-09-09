@@ -177,9 +177,16 @@ output <- bind_rows(cause_data, risk_data)
 saveRDS(output, file = output_file)
 
 
+# Risk and Cauyse meta data sets -----------------------------------------------------------------------
+risk_meta <- jsonlite::fromJSON(paste0(api_root, risk_meta_subset,"&",key_text))
+colnames(risk_meta$data) <- risk_meta$meta$fields
+risk_meta <- as.data.frame(risk_meta$data)
+saveRDS(risk_meta, file = "../data/meta/risk-meta")
 
-
-
+cause_meta <- jsonlite::fromJSON(paste0(api_root, cause_meta_subset,"&",key_text))
+colnames(cause_meta$data) <- cause_meta$meta$fields
+cause_meta <- as.data.frame(cause_meta$data)
+saveRDS(cause_meta, file = "../data/meta/cause-meta")
 
 
 
