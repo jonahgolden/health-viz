@@ -37,7 +37,6 @@ colfunc3 <- colorRampPalette(c("#CAD9EC", "#1A468F"))
 
 level2$color = c(colfunc1(7), colfunc2(12), colfunc3(3))
 
-
 # Full data set
 riskByCauseData <- readRDS("../data/ihme-risks-by-cause-2017-v2.RDS") %>%
   filter(cause_id %in% level2$cause_id) %>%
