@@ -45,6 +45,9 @@ ihme2017Data <- readRDS("../upstream/data/ihme-2017-v2.RDS") %>%
 
 riskByCauseData <- readRDS("../upstream/data/risk-by-cause.RDS")
 
+# Alcohol Use data
+alcoholUseData <- riskByCauseData %>%
+  filter(val < 0, year_id == 2017, sex_id == 3)
 
 # Source functions ----------------------------------------------------------------------
 source("functions/uiOptions.R")  # For the UI
