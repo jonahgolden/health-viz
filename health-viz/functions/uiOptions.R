@@ -5,12 +5,12 @@ source("functions/widgets.R")
 
 normalUI <- function() {
   sidebarLayout(
-    
+
     # Includes all widgets that appear in any tab.
     sidebarPanel(
       width = SIDE_BAR_PANEL_WIDTH,
       useShinyjs(),
-      
+
       displayButtonInput(),
       wellPanel(
         levelSliderInput(),
@@ -21,39 +21,39 @@ normalUI <- function() {
         measureSelectInput()
       )
     ),
-    
+
     # Includes multiple tabs with values that represent them
-    mainPanel(
-      tabsetPanel(type = "tabs", id = "tab",
-                  
-                  # Bar graphs tab
-                  tabPanel("Bars", fluid = TRUE, value = "bar",
-                           fluidRow(
-                             column(6, plotOutput("deathBar")),
-                             column(6, plotOutput("dalyBar"))
-                           ),
-                           fluidRow(
-                             column(6, plotOutput("yldBar")),
-                             column(6, plotOutput("yllBar"))
-                           )
-                  ),
-                  
-                  # Line graph tab
-                  tabPanel("Line", fluid = TRUE, value = "line",
-                           plotOutput("linePlot", height = 600)
-                  ),
-                  
-                  # Risk By Cause tab
-                  tabPanel("Risks By Cause", fluid = TRUE, value = "riskByCause",
-                           plotOutput("riskByCause", height = 600))
-      )
+  mainPanel(
+    tabsetPanel(type = "tabs", id = "tab",
+
+                # Risk By Cause tab
+                tabPanel("Risks By Cause", fluid = TRUE, value = "riskByCause",
+                         plotlyOutput("riskByCause", height = 600)),
+
+                # Bar graphs tab
+                tabPanel("Bars", fluid = TRUE, value = "bar",
+                         fluidRow(
+                           column(6, plotOutput("deathBar")),
+                           column(6, plotOutput("dalyBar"))
+                         ),
+                         fluidRow(
+                           column(6, plotOutput("yldBar")),
+                           column(6, plotOutput("yllBar"))
+                         )
+                ),
+
+                # Line graph tab
+                tabPanel("Line", fluid = TRUE, value = "line",
+                         plotOutput("linePlot", height = 600)
+                )
     )
+  )
   )
 }
 
 dashboardUI <- function() {
   dashboardPage(
-    dashboardHeader(title = "DASHBOARD"),
+    dashboardHeader(title = "Some Awesome Title"),
 
     dashboardSidebar(
       useShinyjs(),
@@ -68,6 +68,8 @@ dashboardUI <- function() {
 
     dashboardBody(
       tabsetPanel(type = "tabs", id = "tab",
+                  tabPanel("Risks By Cause", fluid = TRUE, value = "riskByCause",
+                           plotlyOutput("riskByCause", height = 600)),
                   tabPanel("bars", fluid = TRUE, value = "bar",
                     fluidRow(
                       column(6, plotOutput("deathBar")),
