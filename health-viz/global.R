@@ -40,10 +40,10 @@ METRICS <- list(
 )
 
 # Load Data-----------------------------------------------------------------------
-ihme2017Data <- readRDS("../upstream/data/ihme-2017-v2.RDS") %>%
+ihme2017Data <- readRDS("data/ihme-2017-v2.RDS") %>%
   subset(., year_id >= min(VALID_YEARS))
 
-riskByCauseData <- readRDS("../upstream/data/risk-by-cause.RDS")
+riskByCauseData <- readRDS("data/risk-by-cause.RDS")
 
 # Alcohol Use data
 alcoholUseData <- riskByCauseData %>%

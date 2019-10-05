@@ -32,7 +32,7 @@ RiskByCausePlot <- function(data) {
   # Filter negative values (only exist for alcohol - this is weird) 
   # data <- filter(data, val > 0)
 
-  # Add Total and arrange by sort order
+  # Add Total and arrange by sort order for 
   data <- data %>%
     mutate(total = mapply(function(r) sum(data$val[data$risk_id == r]), risk_id)) %>%
     arrange(sort_order)
