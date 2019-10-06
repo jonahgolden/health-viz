@@ -38,6 +38,11 @@ METRICS <- list(
   "2" = list(name = "Percent", symbol = "%"),
   "3" = list(name = "Rate (per 100,000)", symbol = "Rate")
 )
+SEXES <- list(
+  "1" = list(name = "Males"),
+  "2" = list(name = "Females"),
+  "3" = list(name = "Both sexes")
+)
 
 # Load Data-----------------------------------------------------------------------
 ihme2017Data <- readRDS("data/ihme-2017-v2.RDS") %>%
@@ -45,9 +50,6 @@ ihme2017Data <- readRDS("data/ihme-2017-v2.RDS") %>%
 
 riskByCauseData <- readRDS("data/risk-by-cause.RDS")
 
-# Alcohol Use data
-alcoholUseData <- riskByCauseData %>%
-  filter(val < 0, year_id == 2017, sex_id == 3)
 
 # Source functions ----------------------------------------------------------------------
 source("functions/uiOptions.R")  # For the UI
@@ -55,5 +57,6 @@ source("functions/generalFunctions.R")  # Functions used by multiple tabs
 source("functions/barFunctions.R")  # Functions for tab 1
 source("functions/lineFunctions.R")  # Functions for tab 2
 source("functions/riskByCauseFunctions.R")  # Functions for tab 3
+source("data/color-palette.R")  # Color palette for risk by cause bars
 
 
