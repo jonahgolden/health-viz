@@ -31,12 +31,6 @@ level2 <- cause_info %>%
   mutate(cause_short_name = factor(CAUSE_SHORT_NAMES, 
                               levels = CAUSE_SHORT_NAMES))
 
-colfunc1 <- colorRampPalette(c("#FBE1D4", "#8F1919"))
-colfunc2 <- colorRampPalette(c("#C1E1B5", "#43884E"))
-colfunc3 <- colorRampPalette(c("#CAD9EC", "#1A468F"))
-
-level2$color = c(colfunc1(7), colfunc2(12), colfunc3(3))
-
 # Full data set
 riskByCauseData <- readRDS("../data/ihme-risks-by-cause-2017-v2.RDS") %>%
   filter(cause_id %in% level2$cause_id) %>%
